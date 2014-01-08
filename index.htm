@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <title>Makindo </title>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+  <link rel="stylesheet" href="css/display.css" />
+
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+  <script src="leaflet-providers/leaflet-providers.js"></script>
+
+
+</head>
+<body>
+<div id="wrap">
+<div id="header"><a href="index.htm"><img src="img/logo.png" border=0></a></div>
+<div id="nav"></div>
+<div id="sidebar">
+<ul>
+ <li><a href=#>Campaigns</a> </li>
+ <li><a href=#>Reports</a> </li>
+ <li><a href=#>Account</a> </li>
+</ul>
+</div>
+<div id="map"></div>
+<div id="footer"><p align="right">&copy; Copyright Makindo Inc.</p></div>
+
+
+<script>
+
+
+
+var mapbox = L.tileLayer.provider('MapBox.jamsterson.goj2aihm'),
+    congress_layer = L.geoJson(null, {
+        style: {
+           color: '#DE0404',
+           weight: 2,
+           opacity: 0.4,
+          fillOpacity: 0.1
+        }
+      }),
+     nielsen_layer = L.geoJson(null, {
+        style: {
+           color: '#0e4378',
+           weight: 2,
+           opacity: 0.4,
+          fillOpacity: 0.1
+        }
+      }),
+    county_layer = L.geoJson(null, {
+        style: {
+           color: '#FCEC00',
+           weight: 2,
+           opacity: 0.4,
+          fillOpacity: 0.1
+        }
+      });
+
+
+var map = L.map('map', {
+    center: new L.LatLng(27 , -83),
+    zoom: 6,
+    layers: [mapbox, congress_layer, nielsen_layer, county_layer]
+});
+
+
+
+var overlayMaps = {
+    "Congressional Districts": congress_layer,
+    "Media Markets": nielsen_layer,
+    "Counties": county_layer
+};
+
+L.control.layers(null, overlayMaps).addTo(map);
+
+
+var personIcon = L.icon({
+    iconUrl: './icons/location-24.png',
+    iconSize: [24, 24],
+    iconAnchor: [11, 22],
+});
+
+
+
+$.getJSON('./data/us-congress-113.json', function (data) {
+    var congress_geojson = topojson.feature(data, data.objects.districts);
+    congress_layer.addData(congress_geojson);
+});
+
+
+$.getJSON('./data/nielsentopo.json', function (data) {
+    var nielsen_geojson = topojson.feature(data, data.objects.nielsen_dma);
+    nielsen_layer.addData(nielsen_geojson);
+});
+
+$.getJSON('./data/us.json', function (data) {
+    var county_geojson = topojson.feature(data, data.objects.counties);
+    county_layer.addData(county_geojson);
+});
+
+
+
+
+</script>
+<script src="js/markers.js"></script>
+
+
+</div>
+</body>
+</html>

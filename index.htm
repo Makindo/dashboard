@@ -101,6 +101,11 @@ var greenIcon = L.icon({
 });
 
 
+var grayIcon = L.icon({
+    iconUrl: './icons/location_gray.png',
+    iconSize: [24, 24],
+    iconAnchor: [11, 22],
+});
 
 $.getJSON('./data/us-congress-113.json', function (data) {
     var congress_geojson = topojson.feature(data, data.objects.districts);
@@ -123,6 +128,8 @@ $.getJSON('./data/us.json', function (data) {
 
 </script>
 <script src="js/markers.js"></script>
+<script src="js/markers-unfound.js"></script>
+
 
 
 </div>
